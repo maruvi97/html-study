@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<body>
+    <table align="left" id="calcTable">
+        <tr>
+            <td>
+                <input id="inputNumber" type="Number" autofocus ></input>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input id="result" disabled ></input>
+            </td>
+        </tr>
+        <tr>
+            <td id="bc">
+                <button name="back" onclick="back();">Back</button>
+                <button name="cancel" onclick="cancel();">C</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button name="one" onclick="inputNumber(7);">7</button>
+                <button name="eight" onclick="inputNumber(8);">8</button>
+                <button name="nine" onclick="inputNumber(9);">9</button>
+                <button name="divide" onclick="calculate('divide');">/</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button name="four" onclick="inputNumber(4);">4</button>
+                <button name="five" onclick="inputNumber(5);">5</button>
+                <button name="six" onclick="inputNumber(6);">6</button>
+                <button name="multiply" onclick="calculate('multiply');">*</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button name="one" onclick="inputNumber(1);">1</button>
+                <button name="two" onclick="inputNumber(2);">2</button>
+                <button name="three" onclick="inputNumber(3);">3</button>
+                <button name="subtract" onclick="calculate('subtract');">-</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button name="dot" onclick="inputNumber('.');">.</button>
+                <button name="zero" onclick="inputNumber(0);">0</button>
+                <button name="equal" onclick="calculate('equal');">=</button>
+                <button name="add" onclick="calculate('add');">+</button>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+
+<style>
+    #calcTable{background-color:pink;}
+    /*숫자 입력*/
+    #inputNumber {width: 170px; height: 30px;}
+    /*계산 결과*/
+    #result {width: 170px; height: 30px;}
+    /*Back, C 버튼 두개는 크기가커서 따로*/
+    #bc button{width: 85px; height: 40px;}
+    /*숫자 및 계산 기호 입력 버튼*/
+    td button {width: 40px; height: 40px; 
+        border-radius: 10px;
+        background-color: white;
+        border: white;
+    }
+    td :hover{
+        background-color: gray;
+    }
+</style>
+
+<script>
+    // 지금까지 계산된 값
+    var sum = 0;
+    // 이전에 선언된 계산방식
+    var type = 'undefined';
+
+    // 키보드입력으로도 계산
+    window.addEventListener("keydown",(e)=>{
+        switch(e.key){
+            case '/' : calculate('divide'); break;
+            case '*' : calculate('multiply'); break;
+            case '-' : calculate('subtract'); break;
+            case '+' : calculate('add'); break;
+            case '=' : case 'Enter' : calculate('equal'); break;
+        }
+        console.debug(e.key);
+    })
+
+    // 버튼으로 숫자입력시
+    function inputNumber(i){
+        document.getElementById('inputNumber').value+=i;
+        document.getElementById('inputNumber').focus();
+    }
+
+    // 뒤로가기(숫자 끝자리 제거)
+    function back(){
+        var tmp = String(document.getElementById('inputNumber').value);
+        document.getElementById('inputNumber').value=parseFloat(tmp.substring(0,tmp.length-1))
+        document.getElementById('inputNumber').focus();
+    }
+
+    // 작업취소(사실상 초기화)
+    function cancel(){
+        document.getElementById('inputNumber').value=null;
+        document.getElementById('inputNumber').focus();
+    }
+
+    // 입력받은 수학기호에 따른 계산
+    function calculate(calType){
+        if (document.getElementById('inputNumber').value == '') return;
+        switch(type){
+            case 'divide' : sum = parseFloat(sum)/parseFloat(document.getElementById('inputNumber').value);
+            break;
+            case 'multiply' : sum = parseFloat(sum)*parseFloat(document.getElementById('inputNumber').value);
+            break;
+            case 'subtract' : sum = parseFloat(sum)-parseFloat(document.getElementById('inputNumber').value);
+            break;
+            case 'add' : sum = parseFloat(sum)+parseFloat(document.getElementById('inputNumber').value);
+            break;
+            default : sum = document.getElementById('inputNumber').value;
+        }
+        document.getElementById('result').value = sum;
+        // 끝나는 계산인경우 이전 계산방식을 없애버림
+        type = (calType=='equal') ? type='undefined':type=calType;
+        document.getElementById('inputNumber').value=null;
+        document.getElementById('inputNumber').focus();
+    }
+</script>
